@@ -15,6 +15,15 @@ $ekstensi = array('png','jpg','jpeg','gif');
 $filenm = $_FILES['foto']['name'];
 $size = $_FILES['foto']['size'];
 $ext = pathinfo($filenm, PATHINFO_EXTENSION);
+// Dapat nm file
+$query_foto = "SELECT foto From data_siswa Where id= ?";
+$stmt = $koneksi->prepare($query_foto);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$stmt->bind_result($oldFileName);
+$stmt -> fetch();
+$stmt -> close();
+
 
 if ($filenm != null) {
     // Foto  diinput
@@ -24,6 +33,9 @@ if ($filenm != null) {
     }else {
         if ($size < 1044070) {
             
+            if ($oldFileName && file_exists("img/" . $oldFileName)) {
+                unlink("img/" . $oldFileName);
+            }
             $foto = $rand.'_'.$filenm;
             move_uploaded_file($_FILES['foto']['tmp_name'], 'img/'.$rand.'_'.$filenm);
     
